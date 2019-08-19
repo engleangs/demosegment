@@ -24,7 +24,7 @@ import './registerServiceWorker'
 Vue.use(BlackDashboard);
 Vue.use(VueRouter);
 Vue.use(RouterPrefetch);
-
+export const EventBus = new Vue();
 /* eslint-disable no-new */
 new Vue({
   router,

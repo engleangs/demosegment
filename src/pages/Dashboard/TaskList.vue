@@ -20,13 +20,42 @@
 </template>
 <script>
   import {BaseTable} from '@/components'
+
   export default {
     components: {
       BaseTable
     },
+    events:{
+      idChange(id) {
+          console.log( 'id ', id);
+      }
+    },
+    methods:{
+      idChange() {
+        console.log('id change');
+      }
+    },
+    props:{
+      customId: {
+        required:true,
+            type:Number,
+            default:-1
+      }
+    },
+    watch:{
+      customId(oldVal,newVal){
+        // let newValue = newVal?newVal:null;
+           console.log( oldVal, newValue);
+      }
+    },
     computed: {
       tableData() {
-        return this.$t('dashboard.taskList');
+        return [
+          {
+            id:1,
+            title:'hello world'
+          }
+        ]
       }
     }
   }

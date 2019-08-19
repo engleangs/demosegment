@@ -17,84 +17,28 @@
                         :extra-options="bigLineChart.extraOptions">
             </line-chart> -->
              <form @submit.prevent>
-               <base-input label="Example select">
-        <select class="form-control" id="exampleFormControlSelect1">
-          <option>1</option>
-          <option>2</option>
-          <option>3</option>
-          <option>4</option>
-          <option>5</option>
+               <base-input label="Crawl Option">
+        <select class="form-control" id="crawlOption" v-model="crawlId">
+          <option value="0">https://www.rfa.org/khmer/indepth/RSS</option>
+          <option value="1">http://km.rfi.fr/general/rss</option>
+          <option value="2">https://khmer.voanews.com/rssfeeds</option>
+          
         </select>
+        
       </base-input>
-          <base-input label="Email address"
-                      type="email"
-                      placeholder="Enter email">
-              <small slot="helperText" id="emailHelp" class="form-text text-muted">We'll never share your email with anyone else.</small>
-          </base-input>
-          <base-input type="combobox"></base-input>
-      <base-input label="Password"
-                  type="password"
-                  placeholder="Password">
-      </base-input>
-      <base-checkbox>
-        Option one is this 
-     </base-checkbox>
-     <base-button native-type="submit" type="primary">Submit</base-button>
+     <base-button native-type="submit" type="primary" @click="fetch">Fetch</base-button>
     </form>
           </div>
         </card>
       </div>
     </div>
     <div class="row">
-      <div class="col-lg-4" :class="{'text-right': isRTL}">
-        <card type="chart">
-          <template slot="header">
-            <h5 class="card-category">{{$t('dashboard.totalShipments')}}</h5>
-            <h3 class="card-title"><i class="tim-icons icon-bell-55 text-primary "></i> 763,215</h3>
-          </template>
-          <div class="chart-area">
-            <line-chart style="height: 100%"
-                        chart-id="purple-line-chart"
-                        :chart-data="purpleLineChart.chartData"
-                        :gradient-colors="purpleLineChart.gradientColors"
-                        :gradient-stops="purpleLineChart.gradientStops"
-                        :extra-options="purpleLineChart.extraOptions">
-            </line-chart>
-          </div>
-        </card>
-      </div>
-      <div class="col-lg-4" :class="{'text-right': isRTL}">
-        <card type="chart">
-          <template slot="header">
-            <h5 class="card-category">{{$t('dashboard.dailySales')}}</h5>
-            <h3 class="card-title"><i class="tim-icons icon-delivery-fast text-info "></i> 3,500€</h3>
-          </template>
-          <div class="chart-area">
-            <bar-chart style="height: 100%"
-                       chart-id="blue-bar-chart"
-                       :chart-data="blueBarChart.chartData"
-                       :gradient-stops="blueBarChart.gradientStops"
-                       :extra-options="blueBarChart.extraOptions">
-            </bar-chart>
-          </div>
-        </card>
-      </div>
-      <div class="col-lg-4" :class="{'text-right': isRTL}">
-        <card type="chart">
-          <template slot="header">
-            <h5 class="card-category">{{$t('dashboard.completedTasks')}}</h5>
-            <h3 class="card-title"><i class="tim-icons icon-send text-success "></i> 12,100K</h3>
-          </template>
-          <div class="chart-area">
-            <line-chart style="height: 100%"
-                        chart-id="green-line-chart"
-                        :chart-data="greenLineChart.chartData"
-                        :gradient-stops="greenLineChart.gradientStops"
-                        :extra-options="greenLineChart.extraOptions">
-            </line-chart>
-          </div>
-        </card>
-      </div>
+      <div class="col-12">
+      <card type="webitems">
+      <template>
+      </template>
+      </card>
+    </div>
     </div>
     <div class="row">
       <div class="col-lg-6 col-md-12">
@@ -114,7 +58,8 @@
             </base-dropdown>
           </template>
           <div class="table-full-width table-responsive">
-            <task-list></task-list>
+            <task-list custom-id=""></task-list>
+            
           </div>
         </card>
       </div>
@@ -136,6 +81,13 @@
   import TaskList from './Dashboard/TaskList';
   import UserTable from './Dashboard/UserTable';
   import config from '@/config';
+  import axios from 'axios'; 
+  const FETCH_API_URL = 'https://secret-badlands-72461.herokuapp.com/demo/crawls';
+  const DEF_HEADER = {
+     'Accept': 'application/json',
+      'Content-Type': 'application/json',
+      'Access-Control-Allow-Origin': '*' 
+  };
 
   export default {
     components: {
@@ -146,6 +98,22 @@
     },
     data() {
       return {
+        crawlId:1,
+        customId:1,
+        webItems:[
+          {
+            id:1,
+            title:'hello',
+            description:"hello"
+          }
+        ],
+         columns: ["id", "name", "job", "since", "salary", "actions"],
+        tableData:[
+          {
+            id:1,
+            title:'yes',
+          }
+        ],
         bigLineChart: {
           allData: [
             [100, 70, 90, 70, 85, 60, 75, 60, 90, 80, 110, 100],
@@ -239,28 +207,46 @@
     },
     methods: {
       initBigChart(index) {
-        let chartData = {
-          datasets: [{
-            fill: true,
-            borderColor: config.colors.primary,
-            borderWidth: 2,
-            borderDash: [],
-            borderDashOffset: 0.0,
-            pointBackgroundColor: config.colors.primary,
-            pointBorderColor: 'rgba(255,255,255,0)',
-            pointHoverBackgroundColor: config.colors.primary,
-            pointBorderWidth: 20,
-            pointHoverRadius: 4,
-            pointHoverBorderWidth: 15,
-            pointRadius: 4,
-            data: this.bigLineChart.allData[index]
-          }],
-          labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
-        }
-        this.$refs.bigChart.updateGradients(chartData);
-        this.bigLineChart.chartData = chartData;
-        this.bigLineChart.activeIndex = index;
+        // let chartData = {
+        //   datasets: [{
+        //     fill: true,
+        //     borderColor: config.colors.primary,
+        //     borderWidth: 2,
+        //     borderDash: [],
+        //     borderDashOffset: 0.0,
+        //     pointBackgroundColor: config.colors.primary,
+        //     pointBorderColor: 'rgba(255,255,255,0)',
+        //     pointHoverBackgroundColor: config.colors.primary,
+        //     pointBorderWidth: 20,
+        //     pointHoverRadius: 4,
+        //     pointHoverBorderWidth: 15,
+        //     pointRadius: 4,
+        //     data: this.bigLineChart.allData[index]
+        //   }],
+        //   labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
+        // }
+        // this.$refs.bigChart.updateGradients(chartData);
+        // this.bigLineChart.chartData = chartData;
+        // this.bigLineChart.activeIndex = index;
+      },
+      fetch() {
+       console.log('click', this.crawlId );
+        let url = FETCH_API_URL+"/"+this.crawlId;
+        let that = this;
+        this.$emit('idChange',1);
+        this.customId = this.crawlId;
+      axios
+      .get( url ,{
+        headers: DEF_HEADER
+      })
+      .then(response => {
+          that.webItems = response.data;
+    
       }
+        );
+
+       
+      },
     },
     mounted() {
       this.i18n = this.$i18n;
