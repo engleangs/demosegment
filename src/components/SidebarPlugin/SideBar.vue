@@ -18,8 +18,8 @@
               alt="">
           </div>
         </a>
-        <a href="http://www.creative-tim.com" class="simple-text logo-normal">
-          Demo
+        <a href="#" class="simple-text logo-normal">
+          Demo Segmentation
         </a>
       </div>
       <slot>
